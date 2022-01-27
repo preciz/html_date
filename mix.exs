@@ -29,8 +29,8 @@ defmodule HTMLDate.MixProject do
   defp deps do
     [
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
-      {:floki, "~> 0.31.0"},
-      {:jason, "~> 1.2"}
+      {:floki, ">= 0.31.0"},
+      {:jason, "~> 1.0"}
     ]
   end
 
