@@ -17,10 +17,9 @@ end
 ## Usage
 
 ```elixir
-original_url = "https://www.example.org/articles/2020/07/12..."
 raw_html = "<!DOCTYPE html>\n<html class=..."
 
-{:ok, ["2021-07-11T06:39:43+02:00", "/2021/07/09/"...]} = HTMLDate.parse(raw_html, original_url)
+{:ok, ["2021-07-11T06:39:43+02:00", "/2021/07/09/"...]} = HTMLDate.parse(raw_html)
 ```
 
 ## Docs

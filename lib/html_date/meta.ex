@@ -107,13 +107,6 @@ defmodule HTMLDate.Meta do
     end
   end)
 
-  def match_meta_attributes(%{"property" => "og:image", "content" => url}) when is_binary(url) do
-    case HTMLDate.parse_url(url) do
-      [date | _] when is_binary(date) -> {"og:image", String.trim(date)}
-      _ -> nil
-    end
-  end
-
   def match_meta_attributes(%{"http-equiv" => "date", "content" => content})
       when is_binary(content) do
     {"http_equiv", content}
