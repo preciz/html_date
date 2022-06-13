@@ -11,8 +11,8 @@ defmodule HTMLDate.Script do
       case Jason.decode(content) do
         {:ok, map} ->
           case map do
-            %{"dateModified" => date} -> [date | acc]
             %{"datePublished" => date} -> [date | acc]
+            %{"dateModified" => date} -> [date | acc]
             %{"dateCreated" => date} -> [date | acc]
             _ -> acc
           end
