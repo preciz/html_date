@@ -16,6 +16,13 @@ defmodule HTMLDate.Script do
             %{"dateModified" => date} -> [date | acc]
             %{"mainEntity" => %{"dateModified" => date}} -> [date | acc]
             %{"dateCreated" => date} -> [date | acc]
+            %{"@graph" => list} ->
+              case Enum.find(list, & &1["@type"] in ["Article", "NewsArticle", ["Article", "NewsArticle"]]) do
+                %{"datePublished" => date} -> [date | acc]
+                %{"dateModified" => date} -> [date | acc]
+                %{"dateCreated" => date} -> [date | acc]
+                _ -> acc
+              end
             _ -> acc
           end
 
