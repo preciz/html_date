@@ -12,7 +12,9 @@ defmodule HTMLDate.Script do
         {:ok, map} ->
           case map do
             %{"datePublished" => date} -> [date | acc]
+            %{"mainEntity" => %{"datePublished" => date}} -> [date | acc]
             %{"dateModified" => date} -> [date | acc]
+            %{"mainEntity" => %{"dateModified" => date}} -> [date | acc]
             %{"dateCreated" => date} -> [date | acc]
             _ -> acc
           end
