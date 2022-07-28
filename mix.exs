@@ -15,7 +15,7 @@ defmodule HTMLDate.MixProject do
       package: package(),
       homepage_url: @github,
       description: """
-      Extract publication dates from HTML documents / articles
+      Extract date strings from HTML documents or articles
       """
     ]
   end
