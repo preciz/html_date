@@ -30,6 +30,6 @@ Documentation can be found at [https://hexdocs.pm/html_date](https://hexdocs.pm/
 
 Inspired by the following repos:
 
-[https://github.com/mediacloud/date_guesser](https://github.com/mediacloud/date_guesser)
+https://github.com/mediacloud/date_guesser
 
-[https://github.com/Webhose/article-date-extractor](https://github.com/Webhose/article-date-extractor)
+https://github.com/Webhose/article-date-extractor
