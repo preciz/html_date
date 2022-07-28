@@ -9,7 +9,7 @@ The package can be installed by adding `html_date` to your list of dependencies 
 ```elixir
 def deps do
   [
-    {:html_date, "~> 0.1.0"}
+    {:html_date, "~> 0.3.0"}
   ]
 end
 ```
