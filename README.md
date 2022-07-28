@@ -17,7 +17,7 @@ end
 ## Usage
 
 ```elixir
-raw_html = "<!DOCTYPE html>\n<html class=..."
+raw_html = "<!DOCTYPE html><html class=..."
 
 {:ok, %HTMLDate.Result{json_ld: [{"datePublished", "2021-07-11T06:39:43+02:00"}, ...]}} = HTMLDate.parse(raw_html)
 ```
