@@ -1,4 +1,4 @@
-defmodule HTMLDate.Tag do
+defmodule HTMLDate.HTMLTag do
   @moduledoc false
 
   def parse(html_tree) do
@@ -9,7 +9,7 @@ defmodule HTMLDate.Tag do
     Floki.find(html_tree, "time")
     |> Enum.reduce([], fn {"time", attributes, _}, acc ->
       case Map.new(attributes) do
-        %{"datetime" => datestring} -> [datestring | acc]
+        %{"datetime" => datestring} -> [{"time.datetime", datestring} | acc]
         _ -> acc
       end
     end)

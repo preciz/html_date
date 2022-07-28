@@ -42,12 +42,12 @@ defmodule HTMLDate.Meta do
   ]
 
   def parse(html_tree) do
-    meta_tags = Floki.find(html_tree, "meta")
-
-    search_meta_tags(meta_tags, [])
+    html_tree
+    |> Floki.find("meta")
+    |> search_meta_tags()
   end
 
-  def search_meta_tags(meta_tags, acc)
+  def search_meta_tags(meta_tags, acc \\ [])
 
   def search_meta_tags([], acc), do: acc
 
@@ -57,7 +57,7 @@ defmodule HTMLDate.Meta do
     |> match_meta_attributes()
     |> case do
       nil -> search_meta_tags(rest, acc)
-      {_key, date_string} -> search_meta_tags(rest, [date_string | acc])
+      {key, date_string} -> search_meta_tags(rest, [{key, date_string} | acc])
     end
   end
 

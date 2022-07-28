@@ -2,48 +2,135 @@ defmodule HTMLDateTest do
   use ExUnit.Case
   doctest HTMLDate
 
-  def build_html_with_meta(meta) do
+  def html_with_meta(meta) do
     "<html><head>#{meta}</head></html>"
-  end
-
-  def build_html_with_time_tag do
-    ~s(<html><head></head><body><time class="id-DateTime" datetime="2021-12-25"></time></body></html>)
   end
 
   test "parses correct date from meta" do
     content = "2021-12-25"
 
     examples = [
-      ~s(<meta name='publishdate' content="#{content}"/>),
-      ~s(<meta name="timestamp" content="#{content}" />),
-      ~s(<meta name="DC.date.issued" content="#{content}" />),
-      ~s(<meta name="Date" content="#{content}" />),
-      ~s(<meta name="sailthru.date" content="#{content}" />),
-      ~s(<meta name="article.published" content="#{content}" />),
-      ~s(<meta name="published-date" content="#{content}" />),
-      ~s(<meta name="article.created" content="#{content}" />),
-      ~s(<meta name="article_date_original" content="#{content}" />),
-      ~s(<meta name="cXenseParse:recs:publishtime" content="#{content}" />),
-      ~s(<meta name="DATE_PUBLISHED" content="#{content}" />),
-      ~s(<meta name="DATE_PUBLISHED" content="#{content}" />),
-      ~s(<meta itemprop="datePublished" content="#{content}" />),
-      ~s(<meta itemprop="dateCreated" content="#{content}" />),
-      ~s(<meta property="article:published_time" content="#{content}" />),
-      ~s(<meta property="bt:pubDate" content="#{content}" />)
+      {"publishdate", ~s(<meta name='publishdate' content="#{content}"/>)},
+      {"timestamp", ~s(<meta name="timestamp" content="#{content}" />)},
+      {"dc.date.issued", ~s(<meta name="DC.date.issued" content="#{content}" />)},
+      {"date", ~s(<meta name="Date" content="#{content}" />)},
+      {"sailthru.date", ~s(<meta name="sailthru.date" content="#{content}" />)},
+      {"article.published", ~s(<meta name="article.published" content="#{content}" />)},
+      {"published-date", ~s(<meta name="published-date" content="#{content}" />)},
+      {"article.created", ~s(<meta name="article.created" content="#{content}" />)},
+      {"article_date_original", ~s(<meta name="article_date_original" content="#{content}" />)},
+      {"cxenseparse:recs:publishtime",
+       ~s(<meta name="cXenseParse:recs:publishtime" content="#{content}" />)},
+      {"date_published", ~s(<meta name="DATE_PUBLISHED" content="#{content}" />)},
+      {"datepublished", ~s(<meta itemprop="datePublished" content="#{content}" />)},
+      {"datecreated", ~s(<meta itemprop="dateCreated" content="#{content}" />)},
+      {"article:published_time",
+       ~s(<meta property="article:published_time" content="#{content}" />)},
+      {"bt:pubdate", ~s(<meta property="bt:pubDate" content="#{content}" />)}
     ]
 
-    Enum.each(examples, fn example ->
-      html = build_html_with_meta(example)
+    examples
+    |> Enum.each(fn {key, example} ->
+      html = html_with_meta(example)
 
-      assert {:ok, [^content]} = HTMLDate.parse(html)
+      assert {:ok, %HTMLDate.Result{meta: [{^key, ^content}]}} = HTMLDate.parse(html)
     end)
   end
 
   test "parses correct date from <time> tag" do
     content = "2021-12-25"
 
-    html = build_html_with_time_tag()
+    html =
+      ~s(<html><head></head><body><time class="id-DateTime" datetime="#{content}"></time></body></html>)
 
-    assert {:ok, [^content]} = HTMLDate.parse(html)
+    assert {:ok, %HTMLDate.Result{html_tag: [{"time.datetime", ^content}]}} = HTMLDate.parse(html)
+  end
+
+  test "parses correct date from JSON-LD" do
+    content = "2021-12-25"
+
+    html = ~s(<html><head></head><body><script type="application/ld+json">{
+      "@context": "http://schema.org",
+      "@type": "Article",
+      "datePublished": "#{content}"
+    }</script></body></html>)
+
+    assert {:ok, %HTMLDate.Result{json_ld: [{"datePublished", ^content}]}} = HTMLDate.parse(html)
+  end
+
+  test "parses correct date from mainEntity in JSON-LD" do
+    content = "2021-12-25"
+
+    html = ~s(<html><head></head><body><script type="application/ld+json">{
+      "@context": "http://schema.org",
+      "@type": "Article",
+      "mainEntity": {
+        "@type": "Article",
+        "datePublished": "#{content}"
+      }
+    }</script></body></html>)
+
+    assert {:ok, %HTMLDate.Result{json_ld: [{"mainEntity.datePublished", ^content}]}} =
+             HTMLDate.parse(html)
+
+    html = ~s(<html><head></head><body><script type="application/ld+json">{
+      "@context": "http://schema.org",
+      "@type": "Article",
+      "mainEntity": {
+        "@type": "Article",
+        "datePublished": "#{content}",
+        "dateCreated": "#{content}"
+      }
+    }</script></body></html>)
+
+    assert {:ok,
+            %HTMLDate.Result{
+              json_ld: [
+                {"mainEntity.dateCreated", ^content},
+                {"mainEntity.datePublished", ^content}
+              ]
+            }} = HTMLDate.parse(html)
+  end
+
+  test "parses correct date from @graph in JSON-LD" do
+    content = "2021-12-25"
+
+    html = ~s(<html><head></head><body><script type="application/ld+json">{
+      "@context": "http://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "datePublished": "#{content}",
+          "dateCreated": "#{content}"
+        }
+      ]
+    }</script></body></html>)
+
+    assert {:ok,
+            %HTMLDate.Result{
+              json_ld: [
+                {"@graph.Article.dateCreated", ^content},
+                {"@graph.Article.datePublished", ^content}
+              ]
+            }} = HTMLDate.parse(html)
+
+    html = ~s(<html><head></head><body><script type="application/ld+json">{
+      "@context": "http://schema.org",
+      "@graph": [
+        {
+          "@type": "NewsArticle",
+          "datePublished": "#{content}",
+          "dateCreated": "#{content}"
+        }
+      ]
+    }</script></body></html>)
+
+    assert {:ok,
+            %HTMLDate.Result{
+              json_ld: [
+                {"@graph.NewsArticle.dateCreated", ^content},
+                {"@graph.NewsArticle.datePublished", ^content}
+              ]
+            }} = HTMLDate.parse(html)
   end
 end
