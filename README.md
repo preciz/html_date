@@ -4,7 +4,7 @@ Extract date strings from HTML documents or articles.
 
 ## Installation
 
-The package can be installed by adding `html_date` to your list of dependencies in `mix.exs`:
+Add `html_date` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
