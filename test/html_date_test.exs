@@ -33,7 +33,8 @@ defmodule HTMLDateTest do
     |> Enum.each(fn {key, example} ->
       html = html_with_meta(example)
 
-      assert {:ok, %HTMLDate.Result{meta: [{^key, ^content}]}} = HTMLDate.parse(html)
+      assert {:ok, %HTMLDate.Result{meta: [{^key, ^content}], json_ld: [], html_tag: []}} =
+               HTMLDate.parse(html)
     end)
   end
 
@@ -130,7 +131,9 @@ defmodule HTMLDateTest do
               json_ld: [
                 {"@graph.NewsArticle.dateCreated", ^content},
                 {"@graph.NewsArticle.datePublished", ^content}
-              ]
+              ],
+              meta: [],
+              html_tag: []
             }} = HTMLDate.parse(html)
   end
 end
