@@ -1,6 +1,8 @@
 defmodule HTMLDate.JSONLD do
   @moduledoc false
 
+  @allowed_types ["WebPage", "Article", "NewsArticle", ["Article", "NewsArticle"]]
+
   @parsable_attributes [
     ["datePublished"],
     ["dateModified"],
@@ -55,7 +57,7 @@ defmodule HTMLDate.JSONLD do
 
   def articles_from_graph(%{"@graph" => list}) when is_list(list) do
     list
-    |> Enum.filter(&(&1["@type"] in ["Article", "NewsArticle", ["Article", "NewsArticle"]]))
+    |> Enum.filter(&(&1["@type"] in @allowed_types))
   end
 
   def articles_from_graph(_), do: []
