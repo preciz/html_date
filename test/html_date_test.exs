@@ -47,6 +47,13 @@ defmodule HTMLDateTest do
     assert {:ok, %HTMLDate.Result{html_tag: [{"time.datetime", ^content}]}} = HTMLDate.parse(html)
   end
 
+  test "skips <st1:time> tag and similar without error" do
+    html =
+      ~s(<html><head></head><body><st1:time></st1:time></body></html>)
+
+    assert {:ok, %HTMLDate.Result{html_tag: []}} = HTMLDate.parse(html)
+  end
+
   test "parses correct date from JSON-LD" do
     content = "2021-12-25"
 

@@ -7,11 +7,15 @@ defmodule HTMLDate.HTMLTag do
 
   def parse_time(html_tree) do
     Floki.find(html_tree, "time")
-    |> Enum.reduce([], fn {"time", attributes, _}, acc ->
-      case Map.new(attributes) do
-        %{"datetime" => datestring} -> [{"time.datetime", datestring} | acc]
-        _ -> acc
-      end
+    |> Enum.reduce([], fn
+      {"time", attributes, _}, acc ->
+        case Map.new(attributes) do
+          %{"datetime" => datestring} -> [{"time.datetime", datestring} | acc]
+          _ -> acc
+        end
+
+      _, acc ->
+        acc
     end)
   end
 end
