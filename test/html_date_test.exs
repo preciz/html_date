@@ -48,8 +48,7 @@ defmodule HTMLDateTest do
   end
 
   test "skips <st1:time> tag and similar without error" do
-    html =
-      ~s(<html><head></head><body><st1:time></st1:time></body></html>)
+    html = ~s(<html><head></head><body><st1:time></st1:time></body></html>)
 
     assert {:ok, %HTMLDate.Result{html_tag: []}} = HTMLDate.parse(html)
   end
