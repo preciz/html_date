@@ -50,15 +50,9 @@ defmodule HTMLDate.JSONLD do
     |> Floki.find("script[type=\"application/ld+json\"]")
     |> Enum.reduce([], fn {"script", _, [content]}, acc ->
       case Jason.decode(content) do
-        {:ok, map} when is_map(map) ->
-          [map | acc]
-
-        {:error, _} ->
-          acc
-
-        other ->
-          Logger.warn("Unexpected JSON-LD: #{inspect(other)}")
-          acc
+        {:ok, map} when is_map(map) -> [map | acc]
+        {:ok, _not_map} -> acc
+        {:error, _} -> acc
       end
     end)
     |> List.flatten()
