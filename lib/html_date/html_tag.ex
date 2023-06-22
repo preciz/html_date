@@ -1,5 +1,7 @@
 defmodule HTMLDate.HTMLTag do
-  @moduledoc false
+  @moduledoc """
+  Parses publication dates from HTML <time> tag.
+  """
 
   def parse(html_tree) do
     parse_time(html_tree)

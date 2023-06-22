@@ -1,5 +1,7 @@
 defmodule HTMLDate.Meta do
-  @moduledoc false
+  @moduledoc """
+  Parses publication dates from HTML <meta> tags.
+  """
 
   # <meta name="<name>" content="<date/datetime>"
   @meta_names [

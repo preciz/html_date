@@ -1,5 +1,7 @@
 defmodule HTMLDate.JSONLD do
-  @moduledoc false
+  @moduledoc """
+  Parses publication dates from HTML <script type="application/ld+json"> tag.
+  """
 
   require Logger
 
