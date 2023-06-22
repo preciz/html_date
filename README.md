@@ -1,5 +1,7 @@
 # HTMLDate
 
+![Actions Status](https://github.com/preciz/html_date/workflows/test/badge.svg)
+
 Extract date strings from HTML documents or articles.
 
 ## Installation
