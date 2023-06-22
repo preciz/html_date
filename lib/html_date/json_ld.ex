@@ -34,7 +34,7 @@ defmodule HTMLDate.JSONLD do
 
     @parsable_attributes
     |> Enum.reduce(acc, fn attribute, acc ->
-      case get_in(map, attribute) do
+      case try_get_in(map, attribute) do
         date_string when is_binary(date_string) ->
           [{prefix <> Enum.join(attribute, "."), date_string} | acc]
 
@@ -42,6 +42,12 @@ defmodule HTMLDate.JSONLD do
           acc
       end
     end)
+  end
+
+  def try_get_in(map, keys) do
+    get_in(map, keys)
+  rescue
+    ArgumentError -> nil
   end
 
   @spec parse_all_json_ld(Floki.HTMLTree.t()) :: [map]
