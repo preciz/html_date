@@ -2,7 +2,7 @@ defmodule HTMLDateTest do
   use ExUnit.Case
   doctest HTMLDate
 
-  def html_with_meta(meta) do
+  def html_with_meta(meta) when is_binary(meta) do
     "<html><head>#{meta}</head></html>"
   end
 
