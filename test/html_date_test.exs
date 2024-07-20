@@ -1,5 +1,5 @@
 defmodule HTMLDateTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   doctest HTMLDate
 
   def html_with_meta(meta) when is_binary(meta) do
