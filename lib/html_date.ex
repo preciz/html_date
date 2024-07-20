@@ -5,7 +5,11 @@ defmodule HTMLDate do
 
   defmodule Result do
     @moduledoc false
-    @type t :: %__MODULE__{}
+    @type t :: %__MODULE__{
+      meta: [{String.t(), String.t()}],
+      json_ld: [{String.t(), String.t()}],
+      html_tag: [{String.t(), String.t()}]
+    }
 
     @enforce_keys [:meta, :json_ld, :html_tag]
     defstruct [:meta, :json_ld, :html_tag]
