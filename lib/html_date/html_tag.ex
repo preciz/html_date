@@ -12,9 +12,14 @@ defmodule HTMLDate.HTMLTag do
     |> Enum.reduce([], fn
       {"time", attributes, _}, acc ->
         case Map.new(attributes) do
-          %{"datetime" => datestring, "pubdate" => _} -> [{"time.datetime.pubdate", datestring} | acc]
-          %{"datetime" => datestring} -> [{"time.datetime", datestring} | acc]
-          _ -> acc
+          %{"datetime" => datestring, "pubdate" => _} ->
+            [{"time.datetime.pubdate", datestring} | acc]
+
+          %{"datetime" => datestring} ->
+            [{"time.datetime", datestring} | acc]
+
+          _ ->
+            acc
         end
 
       _, acc ->

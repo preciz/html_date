@@ -44,7 +44,8 @@ defmodule HTMLDateTest do
     html =
       ~s(<html><head></head><body><time class="id-DateTime" datetime="#{content}" pubdate></time></body></html>)
 
-    assert {:ok, %HTMLDate.Result{html_tag: [{"time.datetime.pubdate", ^content}]}} = HTMLDate.parse(html)
+    assert {:ok, %HTMLDate.Result{html_tag: [{"time.datetime.pubdate", ^content}]}} =
+             HTMLDate.parse(html)
   end
 
   test "parses correct date from <time> tag" do
