@@ -74,6 +74,19 @@ defmodule HTMLDateTest do
     assert {:ok, %HTMLDate.Result{json_ld: [{"datePublished", ^content}]}} = HTMLDate.parse(html)
   end
 
+  test "parses correct date from meta with http-equiv" do
+    content = "2021-12-25"
+    html = html_with_meta(~s(<meta http-equiv="date" content="#{content}" />))
+
+    assert {:ok, %HTMLDate.Result{meta: [{"http_equiv", ^content}]}} = HTMLDate.parse(html)
+  end
+
+  test "handles meta tags with no matching attributes" do
+    html = html_with_meta(~s(<meta name="description" content="This is a description" />))
+
+    assert {:ok, %HTMLDate.Result{meta: []}} = HTMLDate.parse(html)
+  end
+
   test "parses correct date from mainEntity in JSON-LD" do
     content = "2021-12-25"
 

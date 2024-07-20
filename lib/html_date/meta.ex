@@ -116,7 +116,9 @@ defmodule HTMLDate.Meta do
 
   def match_meta_attributes(_other), do: nil
 
+  @doc false
   def meta_names, do: @meta_names
 
+  @doc false
   def meta_properties, do: @meta_properties
 end
