@@ -3,8 +3,6 @@ defmodule HTMLDate.JSONLD do
   Parses publication dates from HTML <script type="application/ld+json"> tag.
   """
 
-  require Logger
-
   @allowed_types ["WebPage", "Article", "NewsArticle", ["Article", "NewsArticle"]]
 
   @parsable_attributes [
