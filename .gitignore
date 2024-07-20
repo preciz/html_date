@@ -24,3 +24,4 @@ html_date-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+.aider*
