@@ -33,7 +33,12 @@ defmodule HTMLDateTest do
     |> Enum.each(fn {key, example} ->
       html = html_with_meta(example)
 
-      assert {:ok, %HTMLDate.Result{meta: [{^key, ^content}], json_ld: [], html_tag: []}} =
+      assert {:ok,
+              %HTMLDate.Result{
+                meta: [%{name: ^key, datetime: ^content, attributes: _}],
+                json_ld: [],
+                html_tag: []
+              }} =
                HTMLDate.parse(html)
     end)
   end
@@ -44,7 +49,10 @@ defmodule HTMLDateTest do
     html =
       ~s(<html><head></head><body><time class="id-DateTime" datetime="#{content}" pubdate></time></body></html>)
 
-    assert {:ok, %HTMLDate.Result{html_tag: [{"time.datetime.pubdate", ^content}]}} =
+    assert {:ok,
+            %HTMLDate.Result{
+              html_tag: [%{name: "time.datetime", datetime: ^content, attributes: _}]
+            }} =
              HTMLDate.parse(html)
   end
 
@@ -54,7 +62,10 @@ defmodule HTMLDateTest do
     html =
       ~s(<html><head></head><body><time class="id-DateTime" datetime="#{content}"></time></body></html>)
 
-    assert {:ok, %HTMLDate.Result{html_tag: [{"time.datetime", ^content}]}} = HTMLDate.parse(html)
+    assert {:ok,
+            %HTMLDate.Result{
+              html_tag: [%{name: "time.datetime", datetime: ^content, attributes: _}]
+            }} = HTMLDate.parse(html)
   end
 
   test "skips <st1:time> tag and similar without error" do
@@ -72,14 +83,19 @@ defmodule HTMLDateTest do
       "datePublished": "#{content}"
     }</script></body></html>)
 
-    assert {:ok, %HTMLDate.Result{json_ld: [{"datePublished", ^content}]}} = HTMLDate.parse(html)
+    assert {:ok,
+            %HTMLDate.Result{
+              json_ld: [%{name: "datePublished", datetime: ^content, attributes: _}]
+            }} = HTMLDate.parse(html)
   end
 
   test "parses correct date from meta with http-equiv" do
     content = "2021-12-25"
     html = html_with_meta(~s(<meta http-equiv="date" content="#{content}" />))
 
-    assert {:ok, %HTMLDate.Result{meta: [{"http_equiv", ^content}]}} = HTMLDate.parse(html)
+    assert {:ok,
+            %HTMLDate.Result{meta: [%{name: "http_equiv", datetime: ^content, attributes: _}]}} =
+             HTMLDate.parse(html)
   end
 
   test "handles meta tags with no matching attributes" do
@@ -100,7 +116,10 @@ defmodule HTMLDateTest do
       }
     }</script></body></html>)
 
-    assert {:ok, %HTMLDate.Result{json_ld: [{"mainEntity.datePublished", ^content}]}} =
+    assert {:ok,
+            %HTMLDate.Result{
+              json_ld: [%{name: "mainEntity.datePublished", datetime: ^content, attributes: _}]
+            }} =
              HTMLDate.parse(html)
 
     html = ~s(<html><head></head><body><script type="application/ld+json">{
@@ -116,8 +135,8 @@ defmodule HTMLDateTest do
     assert {:ok,
             %HTMLDate.Result{
               json_ld: [
-                {"mainEntity.dateCreated", ^content},
-                {"mainEntity.datePublished", ^content}
+                %{name: "mainEntity.dateCreated", datetime: ^content, attributes: _},
+                %{name: "mainEntity.datePublished", datetime: ^content, attributes: _}
               ]
             }} = HTMLDate.parse(html)
   end
@@ -139,8 +158,8 @@ defmodule HTMLDateTest do
     assert {:ok,
             %HTMLDate.Result{
               json_ld: [
-                {"@graph.Article.dateCreated", ^content},
-                {"@graph.Article.datePublished", ^content}
+                %{name: "@graph.Article.dateCreated", datetime: ^content, attributes: _},
+                %{name: "@graph.Article.datePublished", datetime: ^content, attributes: _}
               ]
             }} = HTMLDate.parse(html)
 
@@ -158,8 +177,8 @@ defmodule HTMLDateTest do
     assert {:ok,
             %HTMLDate.Result{
               json_ld: [
-                {"@graph.NewsArticle.dateCreated", ^content},
-                {"@graph.NewsArticle.datePublished", ^content}
+                %{name: "@graph.NewsArticle.dateCreated", datetime: ^content, attributes: _},
+                %{name: "@graph.NewsArticle.datePublished", datetime: ^content, attributes: _}
               ],
               meta: [],
               html_tag: []

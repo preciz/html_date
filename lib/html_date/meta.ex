@@ -59,7 +59,7 @@ defmodule HTMLDate.Meta do
     |> match_meta_attributes()
     |> case do
       nil -> search_meta_tags(rest, acc)
-      {key, date_string} -> search_meta_tags(rest, [{key, date_string} | acc])
+      map -> search_meta_tags(rest, [map | acc])
     end
   end
 
@@ -87,31 +87,35 @@ defmodule HTMLDate.Meta do
 
   @meta_names
   |> Enum.each(fn name ->
-    def match_meta_attributes(%{"name" => unquote(name), "content" => content})
+    def match_meta_attributes(%{"name" => unquote(name), "content" => content} = attributes)
         when is_binary(content) do
-      {unquote(name), content}
+      %{name: unquote(name), datetime: content, attributes: attributes}
     end
   end)
 
   @meta_properties
   |> Enum.each(fn property ->
-    def match_meta_attributes(%{"property" => unquote(property), "content" => content})
+    def match_meta_attributes(
+          %{"property" => unquote(property), "content" => content} = attributes
+        )
         when is_binary(content) do
-      {unquote(property), content}
+      %{name: unquote(property), datetime: content, attributes: attributes}
     end
   end)
 
   @meta_itemprops
   |> Enum.each(fn itemprop ->
-    def match_meta_attributes(%{"itemprop" => unquote(itemprop), "content" => content})
+    def match_meta_attributes(
+          %{"itemprop" => unquote(itemprop), "content" => content} = attributes
+        )
         when is_binary(content) do
-      {unquote(itemprop), content}
+      %{name: unquote(itemprop), datetime: content, attributes: attributes}
     end
   end)
 
-  def match_meta_attributes(%{"http-equiv" => "date", "content" => content})
+  def match_meta_attributes(%{"http-equiv" => "date", "content" => content} = attributes)
       when is_binary(content) do
-    {"http_equiv", content}
+    %{name: "http_equiv", datetime: content, attributes: attributes}
   end
 
   def match_meta_attributes(_other), do: nil

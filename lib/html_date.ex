@@ -5,10 +5,17 @@ defmodule HTMLDate do
 
   defmodule Result do
     @moduledoc false
+
+    @type datetime_entry :: %{
+            name: String.t(),
+            datetime: String.t(),
+            attributes: map()
+          }
+
     @type t :: %__MODULE__{
-            meta: [{String.t(), String.t()}],
-            json_ld: [{String.t(), String.t()}],
-            html_tag: [{String.t(), String.t()}]
+            meta: [datetime_entry],
+            json_ld: [datetime_entry],
+            html_tag: [datetime_entry]
           }
 
     @enforce_keys [:meta, :json_ld, :html_tag]

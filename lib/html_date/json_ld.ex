@@ -36,7 +36,8 @@ defmodule HTMLDate.JSONLD do
     |> Enum.reduce(acc, fn attribute, acc ->
       case try_get_in(map, attribute) do
         date_string when is_binary(date_string) ->
-          [{prefix <> Enum.join(attribute, "."), date_string} | acc]
+          name = prefix <> Enum.join(attribute, ".")
+          [%{name: name, datetime: date_string, attributes: map} | acc]
 
         _ ->
           acc
