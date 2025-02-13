@@ -8,7 +8,7 @@ defmodule HTMLDate.MixProject do
     [
       app: :html_date,
       version: @version,
-      elixir: "~> 1.12",
+      elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       docs: docs(),
@@ -28,9 +28,8 @@ defmodule HTMLDate.MixProject do
 
   defp deps do
     [
-      {:ex_doc, "~> 0.34", only: :dev, runtime: false},
-      {:floki, ">= 0.31.0"},
-      {:jason, "~> 1.0"}
+      {:ex_doc, "~> 0.37", only: :dev, runtime: false},
+      {:floki, ">= 0.31.0"}
     ]
   end
 

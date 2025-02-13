@@ -55,7 +55,7 @@ defmodule HTMLDate.JSONLD do
     html_tree
     |> Floki.find("script[type=\"application/ld+json\"]")
     |> Enum.reduce([], fn {"script", _, [content]}, acc ->
-      case Jason.decode(content) do
+      case JSON.decode(content) do
         {:ok, map} when is_map(map) -> [map | acc]
         {:ok, _not_map} -> acc
         {:error, _} -> acc
