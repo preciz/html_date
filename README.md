@@ -11,7 +11,7 @@ Add `html_date` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:html_date, "~> 0.3.0"}
+    {:html_date, "~> 0.5.0"}
   ]
 end
 ```
