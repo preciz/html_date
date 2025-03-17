@@ -21,7 +21,7 @@ end
 ```elixir
 raw_html = "<!DOCTYPE html><html class=..."
 
-{:ok, %HTMLDate.Result{json_ld: [{"datePublished", "2021-07-11T06:39:43+02:00"}, ...]}} = HTMLDate.parse(raw_html)
+{:ok, %HTMLDate.Result{json_ld: [%{name: "datePublished", datetime: "2021-07-11T06:39:43+02:00", attributes: %{...}}, ...]}} = HTMLDate.parse(raw_html)
 ```
 
 ## Docs
