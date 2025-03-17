@@ -67,6 +67,7 @@ defmodule HTMLDate.JSONLD do
 
   def articles_from_graph(%{"@graph" => list}) when is_list(list) do
     list
+    |> Enum.filter(&is_map/1)
     |> Enum.filter(&(&1["@type"] in @allowed_types))
   end
 
