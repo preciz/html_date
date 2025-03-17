@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.5.1] - 2025-03-17
+-  Fix error caused by unexpected list in graph in `HTMLDate.JSONLD`
+
 ## [0.5.0] - 2025-02-13
 
 ### Changed (breaking changes)
