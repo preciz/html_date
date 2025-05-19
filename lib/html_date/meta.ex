@@ -45,7 +45,9 @@ defmodule HTMLDate.Meta do
 
   def parse(html_tree) do
     html_tree
-    |> Floki.find("meta")
+    |> LazyHTML.query("meta")
+    |> LazyHTML.attributes()
+    |> Enum.map(&Map.new/1)
     |> search_meta_tags()
   end
 
@@ -55,7 +57,7 @@ defmodule HTMLDate.Meta do
 
   def search_meta_tags([meta_tag | rest], acc) do
     meta_tag
-    |> meta_tag_properties()
+    |> prepare_attributes()
     |> match_meta_attributes()
     |> case do
       nil -> search_meta_tags(rest, acc)
@@ -63,24 +65,20 @@ defmodule HTMLDate.Meta do
     end
   end
 
-  def meta_tag_properties({"meta", properties, _children}) do
-    properties
-    |> Enum.reduce(
-      %{},
-      fn
-        {key, value}, acc ->
-          key = key |> String.downcase() |> String.trim()
+  def prepare_attributes(attributes) do
+    attributes
+    |> Map.new(fn {key, value} ->
+      key = key |> String.downcase() |> String.trim()
 
-          value =
-            case key do
-              "content" -> value
-              _ -> String.downcase(value)
-            end
-            |> String.trim()
+      value =
+        case key do
+          "content" -> value
+          _ -> String.downcase(value)
+        end
+        |> String.trim()
 
-          Map.put(acc, key, value)
-      end
-    )
+      {key, value}
+    end)
   end
 
   def match_meta_attributes(meta_attributes)

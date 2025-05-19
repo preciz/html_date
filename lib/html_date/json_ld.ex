@@ -14,7 +14,7 @@ defmodule HTMLDate.JSONLD do
     ["mainEntity", "dateCreated"]
   ]
 
-  @spec parse(Floki.HTMLTree.t()) :: [{String.t(), String.t()}]
+  @spec parse(LazyHTML.t()) :: [{String.t(), String.t()}]
   def parse(html_tree) do
     html_tree
     |> parse_all_json_ld()
@@ -51,11 +51,13 @@ defmodule HTMLDate.JSONLD do
     ArgumentError -> nil
   end
 
-  @spec parse_all_json_ld(Floki.HTMLTree.t()) :: [map]
+  @spec parse_all_json_ld(LazyHTML.t()) :: [map]
   def parse_all_json_ld(html_tree) do
     html_tree
-    |> Floki.find("script[type=\"application/ld+json\"]")
-    |> Enum.reduce([], fn {"script", _, [content]}, acc ->
+    |> LazyHTML.query("script[type=\"application/ld+json\"]")
+    |> Enum.reduce([], fn script_node, acc ->
+      content = LazyHTML.text(script_node)
+
       case JSON.decode(content) do
         {:ok, map} when is_map(map) -> [map | acc]
         {:ok, _not_map} -> acc

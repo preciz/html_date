@@ -26,15 +26,20 @@ defmodule HTMLDate do
   Parses publication dates from HTML Document string.
   """
   @spec parse(binary) :: {:ok, Result.t()} | {:error, any}
-  def parse(html, floki_options \\ []) when is_binary(html) do
-    case Floki.parse_document(html, floki_options) do
-      {:ok, html_tree} -> {:ok, parse_html_tree(html_tree)}
-      {:error, reason} -> {:error, reason}
-    end
+  def parse(html) when is_binary(html) do
+    {:ok, LazyHTML.from_document(html) |> parse_html_tree()}
+  end
+
+  @doc """
+  Parses publication dates from HTML Fragment string.
+  """
+  @spec parse_fragment(binary) :: {:ok, Result.t()} | {:error, any}
+  def parse_fragment(html) when is_binary(html) do
+    {:ok, LazyHTML.from_fragment(html) |> parse_html_tree()}
   end
 
   @doc false
-  def parse_html_tree(html_tree) when is_list(html_tree) do
+  def parse_html_tree(%LazyHTML{} = html_tree) do
     meta = HTMLDate.Meta.parse(html_tree)
     json_ld = HTMLDate.JSONLD.parse(html_tree)
     html_tag = HTMLDate.HTMLTag.parse(html_tree)

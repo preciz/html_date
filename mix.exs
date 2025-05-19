@@ -29,7 +29,7 @@ defmodule HTMLDate.MixProject do
   defp deps do
     [
       {:ex_doc, "~> 0.37", only: :dev, runtime: false},
-      {:floki, ">= 0.31.0"}
+      {:lazy_html, "~> 0.1.0"}
     ]
   end
 

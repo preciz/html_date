@@ -9,19 +9,15 @@ defmodule HTMLDate.HTMLTag do
 
   def parse_time(html_tree) do
     html_tree
-    |> Floki.find("time")
-    |> Enum.reduce([], fn
-      {"time", attributes, _}, acc ->
-        case Map.new(attributes) do
-          %{"datetime" => datestring} = attributes ->
-            [%{name: "time.datetime", datetime: datestring, attributes: attributes} | acc]
+    |> LazyHTML.query("time")
+    |> Enum.reduce([], fn time_node, acc ->
+      case LazyHTML.attributes(time_node) |> List.flatten() |> Map.new() do
+        %{"datetime" => datestring} = attributes ->
+          [%{name: "time.datetime", datetime: datestring, attributes: attributes} | acc]
 
-          _ ->
-            acc
-        end
-
-      _, acc ->
-        acc
+        _ ->
+          acc
+      end
     end)
   end
 end
