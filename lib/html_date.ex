@@ -23,7 +23,7 @@ defmodule HTMLDate do
   end
 
   @doc """
-  Parses publication dates from HTML Document string.
+  Parses publication dates from HTML Document.
   """
   @spec parse(binary) :: {:ok, Result.t()} | {:error, any}
   def parse(html) when is_binary(html) do
@@ -31,7 +31,7 @@ defmodule HTMLDate do
   end
 
   @doc """
-  Parses publication dates from HTML Fragment string.
+  Parses publication dates from HTML Fragment.
   """
   @spec parse_fragment(binary) :: {:ok, Result.t()} | {:error, any}
   def parse_fragment(html) when is_binary(html) do
