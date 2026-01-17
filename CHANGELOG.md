@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.7.0] - 2026-01-17
+- Support both LazyHTML structs and Floki HTML trees in `HTMLDate.parse_html_tree/1`
+- Refactor internal modules to support dual adapters (Floki and LazyHTML)
+- Increase test coverage to 100%
+
 ## [0.6.0] - 2025-05-19
 - Switch to LazyHTML and make this lib ~24x faster
 - Create new function parse_fragment/1 to parse HTML fragments
