@@ -39,7 +39,7 @@ defmodule HTMLDate do
   end
 
   @doc false
-  def parse_html_tree(%LazyHTML{} = html_tree) do
+  def parse_html_tree(html_tree) do
     meta = HTMLDate.Meta.parse(html_tree)
     json_ld = HTMLDate.JSONLD.parse(html_tree)
     html_tag = HTMLDate.HTMLTag.parse(html_tree)

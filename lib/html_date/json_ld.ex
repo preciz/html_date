@@ -14,10 +14,21 @@ defmodule HTMLDate.JSONLD do
     ["mainEntity", "dateCreated"]
   ]
 
-  @spec parse(LazyHTML.t()) :: [{String.t(), String.t()}]
-  def parse(html_tree) do
+  @spec parse(LazyHTML.t() | Floki.HTMLTree.t()) :: [{String.t(), String.t()}]
+  def parse(%LazyHTML{} = html_tree) do
     html_tree
-    |> parse_all_json_ld()
+    |> HTMLDate.JSONLD.LazyHTML.get_json_maps()
+    |> parse_maps()
+  end
+
+  def parse(html_tree) when is_list(html_tree) do
+    html_tree
+    |> HTMLDate.JSONLD.Floki.get_json_maps()
+    |> parse_maps()
+  end
+
+  def parse_maps(maps) do
+    maps
     |> Enum.reduce([], fn map, acc ->
       date_strings_from_graph =
         map
@@ -48,23 +59,7 @@ defmodule HTMLDate.JSONLD do
   def try_get_in(map, keys) do
     get_in(map, keys)
   rescue
-    ArgumentError -> nil
-  end
-
-  @spec parse_all_json_ld(LazyHTML.t()) :: [map]
-  def parse_all_json_ld(html_tree) do
-    html_tree
-    |> LazyHTML.query("script[type=\"application/ld+json\"]")
-    |> Enum.reduce([], fn script_node, acc ->
-      content = LazyHTML.text(script_node)
-
-      case JSON.decode(content) do
-        {:ok, map} when is_map(map) -> [map | acc]
-        {:ok, _not_map} -> acc
-        {:error, _} -> acc
-      end
-    end)
-    |> List.flatten()
+    FunctionClauseError -> nil
   end
 
   def articles_from_graph(%{"@graph" => list}) when is_list(list) do

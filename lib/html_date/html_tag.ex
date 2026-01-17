@@ -3,16 +3,23 @@ defmodule HTMLDate.HTMLTag do
   Parses publication dates from HTML <time> tag.
   """
 
-  def parse(html_tree) do
-    parse_time(html_tree)
+  def parse(%LazyHTML{} = html_tree) do
+    html_tree
+    |> HTMLDate.HTMLTag.LazyHTML.get_time_attributes()
+    |> process_attributes()
   end
 
-  def parse_time(html_tree) do
+  def parse(html_tree) when is_list(html_tree) do
     html_tree
-    |> LazyHTML.query("time")
-    |> Enum.reduce([], fn time_node, acc ->
-      case LazyHTML.attributes(time_node) |> List.flatten() |> Map.new() do
-        %{"datetime" => datestring} = attributes ->
+    |> HTMLDate.HTMLTag.Floki.get_time_attributes()
+    |> process_attributes()
+  end
+
+  def process_attributes(attributes_list) do
+    attributes_list
+    |> Enum.reduce([], fn attributes, acc ->
+      case attributes do
+        %{"datetime" => datestring} ->
           [%{name: "time.datetime", datetime: datestring, attributes: attributes} | acc]
 
         _ ->

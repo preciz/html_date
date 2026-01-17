@@ -34,7 +34,7 @@ defmodule HTMLDate.Meta do
     "nv:date",
     "og:published_time",
     "og:updated_time",
-    "rnews:datePublished"
+    "rnews:datepublished"
   ]
 
   # <meta itemprop="<itemprop>" content="<date/datetime>"
@@ -43,11 +43,15 @@ defmodule HTMLDate.Meta do
     "datecreated"
   ]
 
-  def parse(html_tree) do
+  def parse(%LazyHTML{} = html_tree) do
     html_tree
-    |> LazyHTML.query("meta")
-    |> LazyHTML.attributes()
-    |> Enum.map(&Map.new/1)
+    |> HTMLDate.Meta.LazyHTML.get_attributes()
+    |> search_meta_tags()
+  end
+
+  def parse(html_tree) when is_list(html_tree) do
+    html_tree
+    |> HTMLDate.Meta.Floki.get_attributes()
     |> search_meta_tags()
   end
 
