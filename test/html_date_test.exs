@@ -28,9 +28,11 @@ defmodule HTMLDateTest do
        ~s(<meta property="article:published_time" content="#{content}" />)},
       {"bt:pubdate", ~s(<meta property="bt:pubDate" content="#{content}" />)},
       {"citation_date", ~s(<meta name="citation_date" content="#{content}" />)},
-      {"citation_publication_date", ~s(<meta name="citation_publication_date" content="#{content}" />)},
+      {"citation_publication_date",
+       ~s(<meta name="citation_publication_date" content="#{content}" />)},
       {"last-modified", ~s(<meta name="last-modified" content="#{content}" />)},
-      {"originalpublicationdate", ~s(<meta name="originalpublicationdate" content="#{content}" />)},
+      {"originalpublicationdate",
+       ~s(<meta name="originalpublicationdate" content="#{content}" />)},
       {"parsely-pub-date", ~s(<meta name="parsely-pub-date" content="#{content}" />)},
       {"pubdate", ~s(<meta name="pubdate" content="#{content}" />)},
       {"publication_date", ~s(<meta name="publication_date" content="#{content}" />)},
@@ -283,36 +285,46 @@ defmodule HTMLDateTest do
   end
 
   test "handles unknown meta tags (Meta.match_meta_attributes fallback)" do
-     # This explicitly targets the match_meta_attributes(_other) clause
-     html = ~s(<html><meta name="unknown-thing" content="2021" /></html>)
-     assert {:ok, %HTMLDate.Result{meta: []}} = HTMLDate.parse(html)
+    # This explicitly targets the match_meta_attributes(_other) clause
+    html = ~s(<html><meta name="unknown-thing" content="2021" /></html>)
+    assert {:ok, %HTMLDate.Result{meta: []}} = HTMLDate.parse(html)
   end
 
   test "JSON-LD handles try_get_in failures gracefully" do
-     # This attempts to trigger try_get_in rescue block if possible,
-     # or at least the non-binary path in parse_attributes.
-     # "mainEntity" expects a map, if we give it a string it might not fail hard but just return nil/skip.
-     html = ~s(<html><script type="application/ld+json">{"mainEntity": "not-a-map"}</script></html>)
-     assert {:ok, %HTMLDate.Result{json_ld: []}} = HTMLDate.parse(html)
+    # This attempts to trigger try_get_in rescue block if possible,
+    # or at least the non-binary path in parse_attributes.
+    # "mainEntity" expects a map, if we give it a string it might not fail hard but just return nil/skip.
+    html =
+      ~s(<html><script type="application/ld+json">{"mainEntity": "not-a-map"}</script></html>)
+
+    assert {:ok, %HTMLDate.Result{json_ld: []}} = HTMLDate.parse(html)
   end
 
   test "Meta attributes normalization" do
     # Content should preserve case, name should be lowercased
     html = ~s(<html><meta NAME="DaTe" CONTENT="2021-12-25T10:00:00Z" /></html>)
-    assert {:ok, %HTMLDate.Result{meta: [%{name: "date", datetime: "2021-12-25T10:00:00Z"}]}} = HTMLDate.parse(html)
+
+    assert {:ok, %HTMLDate.Result{meta: [%{name: "date", datetime: "2021-12-25T10:00:00Z"}]}} =
+             HTMLDate.parse(html)
   end
 
   test "JSON-LD @graph edge cases" do
     # @graph is not a list
-    html = ~s(<html><script type="application/ld+json">{"@context": "http://schema.org", "@graph": "not-a-list"}</script></html>)
+    html =
+      ~s(<html><script type="application/ld+json">{"@context": "http://schema.org", "@graph": "not-a-list"}</script></html>)
+
     assert {:ok, %HTMLDate.Result{json_ld: []}} = HTMLDate.parse(html)
 
     # @graph contains non-map items
-    html = ~s(<html><script type="application/ld+json">{"@context": "http://schema.org", "@graph": ["not-a-map"]}</script></html>)
+    html =
+      ~s(<html><script type="application/ld+json">{"@context": "http://schema.org", "@graph": ["not-a-map"]}</script></html>)
+
     assert {:ok, %HTMLDate.Result{json_ld: []}} = HTMLDate.parse(html)
 
     # @graph contains items with ignored types
-    html = ~s(<html><script type="application/ld+json">{"@context": "http://schema.org", "@graph": [{"@type": "IgnoredType", "datePublished": "2021"}]}</script></html>)
+    html =
+      ~s(<html><script type="application/ld+json">{"@context": "http://schema.org", "@graph": [{"@type": "IgnoredType", "datePublished": "2021"}]}</script></html>)
+
     assert {:ok, %HTMLDate.Result{json_ld: []}} = HTMLDate.parse(html)
   end
 
