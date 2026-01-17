@@ -201,9 +201,10 @@ defmodule HTMLDateTest do
     html = ~s(<html><head><meta name="date" content="#{content}" /></head></html>)
     {:ok, floki_tree} = Floki.parse_document(html)
 
-    assert %HTMLDate.Result{
-             meta: [%{name: "date", datetime: ^content, attributes: _}]
-           } = HTMLDate.parse_html_tree(floki_tree)
+    assert {:ok,
+            %HTMLDate.Result{
+              meta: [%{name: "date", datetime: ^content, attributes: _}]
+            }} = HTMLDate.parse(floki_tree)
   end
 
   test "parses fragment" do
@@ -222,9 +223,10 @@ defmodule HTMLDateTest do
       html = ~s(<script type="application/ld+json">{"datePublished": "#{content}"}</script>)
       {:ok, floki_tree} = Floki.parse_document(html)
 
-      assert %HTMLDate.Result{
-               json_ld: [%{name: "datePublished", datetime: ^content, attributes: _}]
-             } = HTMLDate.parse_html_tree(floki_tree)
+      assert {:ok,
+              %HTMLDate.Result{
+                json_ld: [%{name: "datePublished", datetime: ^content, attributes: _}]
+              }} = HTMLDate.parse(floki_tree)
     end
 
     test "parses <time> tag" do
@@ -232,30 +234,31 @@ defmodule HTMLDateTest do
       html = ~s(<time datetime="#{content}"></time>)
       {:ok, floki_tree} = Floki.parse_fragment(html)
 
-      assert %HTMLDate.Result{
-               html_tag: [%{name: "time.datetime", datetime: ^content, attributes: _}]
-             } = HTMLDate.parse_html_tree(floki_tree)
+      assert {:ok,
+              %HTMLDate.Result{
+                html_tag: [%{name: "time.datetime", datetime: ^content, attributes: _}]
+              }} = HTMLDate.parse(floki_tree)
     end
 
     test "handles invalid JSON in JSON-LD" do
       html = ~s(<script type="application/ld+json">{invalid json}</script>)
       {:ok, floki_tree} = Floki.parse_document(html)
 
-      assert %HTMLDate.Result{json_ld: []} = HTMLDate.parse_html_tree(floki_tree)
+      assert {:ok, %HTMLDate.Result{json_ld: []}} = HTMLDate.parse(floki_tree)
     end
 
     test "handles non-map JSON in JSON-LD" do
       html = ~s(<script type="application/ld+json">["not a map"]</script>)
       {:ok, floki_tree} = Floki.parse_document(html)
 
-      assert %HTMLDate.Result{json_ld: []} = HTMLDate.parse_html_tree(floki_tree)
+      assert {:ok, %HTMLDate.Result{json_ld: []}} = HTMLDate.parse(floki_tree)
     end
 
     test "handles <time> tag without datetime" do
       html = ~s(<time></time>)
       {:ok, floki_tree} = Floki.parse_fragment(html)
 
-      assert %HTMLDate.Result{html_tag: []} = HTMLDate.parse_html_tree(floki_tree)
+      assert {:ok, %HTMLDate.Result{html_tag: []}} = HTMLDate.parse(floki_tree)
     end
   end
 

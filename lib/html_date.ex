@@ -25,9 +25,13 @@ defmodule HTMLDate do
   @doc """
   Parses publication dates from HTML Document.
   """
-  @spec parse(binary) :: {:ok, Result.t()} | {:error, any}
+  @spec parse(binary | list | LazyHTML.t()) :: {:ok, Result.t()} | {:error, any}
   def parse(html) when is_binary(html) do
     {:ok, LazyHTML.from_document(html) |> parse_html_tree()}
+  end
+
+  def parse(html_tree) when is_list(html_tree) or is_struct(html_tree, LazyHTML) do
+    {:ok, parse_html_tree(html_tree)}
   end
 
   @doc """

@@ -11,17 +11,31 @@ Add `html_date` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:html_date, "~> 0.6.0"}
+    {:html_date, "~> 0.7.0"}
   ]
 end
 ```
 
 ## Usage
 
+### Using with LazyHTML (default)
+
+`HTMLDate` uses `LazyHTML` by default when passing a raw HTML string.
+
 ```elixir
 raw_html = "<!DOCTYPE html><html class=..."
 
 {:ok, %HTMLDate.Result{json_ld: [%{name: "datePublished", datetime: "2021-07-11T06:39:43+02:00", attributes: %{...}}, ...]}} = HTMLDate.parse(raw_html)
+```
+
+### Using with Floki
+
+If you already have a parsed Floki document, you can pass it directly to `HTMLDate.parse/1`.
+
+```elixir
+{:ok, floki_document} = Floki.parse_document(raw_html)
+
+{:ok, %HTMLDate.Result{...}} = HTMLDate.parse(floki_document)
 ```
 
 ## Docs
