@@ -14,7 +14,7 @@ defmodule HTMLDate.JSONLD do
     ["mainEntity", "dateCreated"]
   ]
 
-  @spec parse(LazyHTML.t() | Floki.HTMLTree.t()) :: [{String.t(), String.t()}]
+  @spec parse(LazyHTML.t() | Floki.html_tree()) :: [{String.t(), String.t()}]
   def parse(%LazyHTML{} = html_tree) do
     html_tree
     |> HTMLDate.JSONLD.LazyHTML.get_json_maps()

@@ -4,7 +4,9 @@ defmodule HTMLDate do
   """
 
   defmodule Result do
-    @moduledoc false
+    @moduledoc """
+    Result of `HTMLDate.parse/1` and `HTMLDate.parse_fragment/1`.
+    """
 
     @type datetime_entry :: %{
             name: String.t(),
