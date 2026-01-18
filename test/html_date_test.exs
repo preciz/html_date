@@ -198,6 +198,18 @@ defmodule HTMLDateTest do
             }} = HTMLDate.parse(html)
   end
 
+  test "handles JSON-LD where mainEntity is a list (prevents ArgumentError)" do
+    html = ~s(<html><script type="application/ld+json">{
+      "@context": "http://schema.org",
+      "@type": "Article",
+      "mainEntity": [
+        {"@type": "Question", "name": "Q1"}
+      ]
+    }</script></html>)
+
+    assert {:ok, %HTMLDate.Result{json_ld: []}} = HTMLDate.parse(html)
+  end
+
   test "accepts Floki HTML tree (list)" do
     content = "2021-12-25"
     html = ~s(<html><head><meta name="date" content="#{content}" /></head></html>)

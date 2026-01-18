@@ -60,6 +60,7 @@ defmodule HTMLDate.JSONLD do
     get_in(map, keys)
   rescue
     FunctionClauseError -> nil
+    ArgumentError -> nil
   end
 
   def articles_from_graph(%{"@graph" => list}) when is_list(list) do
