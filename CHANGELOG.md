@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.7.1] - 2026-01-18
+- fix: rescue ArgumentError in JSONLD parsing to handle non-map structures
+
 ## [0.7.0] - 2026-01-17
 - Support both LazyHTML structs and Floki HTML trees in `HTMLDate.parse_html_tree/1`
 - Refactor internal modules to support dual adapters (Floki and LazyHTML)
